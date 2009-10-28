@@ -1,8 +1,10 @@
 require 'uri'
 
 module HTTParty
+
   class Request #:nodoc:
     SupportedHTTPMethods = [Net::HTTP::Get, Net::HTTP::Post, Net::HTTP::Put, Net::HTTP::Delete]
+    SupportedURISchemes  = [URI::HTTP, URI::HTTPS]
     
     attr_accessor :http_method, :path, :options
     
@@ -26,6 +28,8 @@ module HTTParty
       unless @redirect
         new_uri.query = query_string(new_uri)
       end
+
+      raise ArgumentError, "Cannot parse '#{new_uri}' as a supported URI class" unless SupportedURISchemes.include? new_uri.class
       
       new_uri
     end
